@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DPL – Dinamalar Premier League</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-dark: #111c35;
+    --gold: #f5c518;
+    --orange: #e85d04;
+    --red: #c1121f;
+    --white: #f8f9fa;
+    --text-muted: #8a9bc0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy-dark);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(17,28,53,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(245,197,24,0.15);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 4px; color: var(--white);
+  }
+  .nav-logo span { color: var(--gold); }
+  nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul li a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  nav ul li a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(232,93,4,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(245,197,24,0.08) 0%, transparent 60%),
+      linear-gradient(180deg, #0d1629 0%, #1a2744 50%, #0d1629 100%);
+  }
+  .grid-lines {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 4px;
+    color: var(--gold); text-transform: uppercase;
+    background: rgba(245,197,24,0.1);
+    border: 1px solid rgba(245,197,24,0.3);
+    padding: 6px 20px; border-radius: 2px;
+    margin-bottom: 28px;
+    position: relative; animation: fadeUp 0.8s ease both;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 11rem);
+    line-height: 0.9; letter-spacing: 6px;
+    position: relative;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero-title .outline {
+    -webkit-text-stroke: 2px rgba(255,255,255,0.15);
+    color: transparent;
+  }
+  .hero-title .accent { color: var(--gold); }
+  .hero-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem; font-weight: 300; letter-spacing: 6px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-top: 12px; position: relative;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-desc {
+    max-width: 560px; margin: 32px auto 0;
+    font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,0.6);
+    position: relative; animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .hero-cta {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-top: 48px; position: relative;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .btn-primary {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none;
+    background: var(--gold); color: var(--navy-dark);
+    padding: 14px 36px; border: none; cursor: pointer;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(245,197,24,0.35); }
+  .btn-outline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none;
+    background: transparent; color: var(--white);
+    padding: 14px 36px; border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .hero-stats {
+    display: flex; gap: 60px; justify-content: center; flex-wrap: wrap;
+    margin-top: 72px; padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    position: relative; animation: fadeUp 0.8s 0.75s ease both;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem; color: var(--gold); line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; letter-spacing: 2px; color: var(--text-muted);
+    text-transform: uppercase; margin-top: 4px;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  section { padding: 100px 60px; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 4px;
+    color: var(--orange); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem); letter-spacing: 3px;
+    line-height: 1;
+  }
+
+  /* ── ABOUT ── */
+  #about { background: var(--navy); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+    max-width: 1100px; margin: 0 auto; align-items: center;
+  }
+  .about-text p {
+    font-size: 1.05rem; line-height: 1.9; color: rgba(255,255,255,0.7);
+    margin-bottom: 20px;
+  }
+  .about-text p strong { color: var(--gold); }
+  .about-visual {
+    background: linear-gradient(135deg, rgba(232,93,4,0.15), rgba(245,197,24,0.08));
+    border: 1px solid rgba(245,197,24,0.2);
+    border-radius: 4px; padding: 48px 36px; text-align: center;
+  }
+  .cricket-icon { font-size: 5rem; margin-bottom: 20px; }
+  .about-visual h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem; letter-spacing: 3px; color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .about-visual p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+
+  /* ── BRACKET / FORMAT ── */
+  #format { background: var(--navy-dark); }
+  .bracket {
+    max-width: 900px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .bracket-stage {
+    display: flex; align-items: stretch; gap: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .bracket-stage:last-child { border-bottom: none; }
+  .stage-label {
+    width: 180px; flex-shrink: 0;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-muted);
+    display: flex; align-items: center; padding: 20px 0;
+    border-right: 2px solid rgba(245,197,24,0.2);
+    padding-right: 24px;
+  }
+  .stage-label.active { color: var(--gold); }
+  .stage-content {
+    flex: 1; padding: 20px 24px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .team-chip {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 2px; color: rgba(255,255,255,0.6);
+  }
+  .stage-meta {
+    margin-left: auto;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; letter-spacing: 2px; color: var(--text-muted);
+    text-align: right; white-space: nowrap;
+  }
+  .stage-meta strong { display: block; color: var(--gold); font-size: 1.2rem; }
+
+  /* ── TIMELINE ── */
+  #timeline { background: var(--navy); }
+  .timeline-table {
+    max-width: 900px; margin: 0 auto;
+    border-collapse: collapse; width: 100%;
+  }
+  .timeline-table th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-muted);
+    padding: 12px 20px; text-align: left;
+    border-bottom: 2px solid rgba(245,197,24,0.3);
+  }
+  .timeline-table td {
+    padding: 16px 20px;
+    font-size: 0.9rem; color: rgba(255,255,255,0.75);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .timeline-table tr:hover td { background: rgba(245,197,24,0.04); }
+  .stage-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .badge-pre { background: rgba(26,39,68,1); color: var(--text-muted); border: 1px solid rgba(138,155,192,0.3); }
+  .badge-league { background: rgba(232,93,4,0.15); color: var(--orange); border: 1px solid rgba(232,93,4,0.3); }
+  .badge-qf { background: rgba(245,197,24,0.1); color: var(--gold); border: 1px solid rgba(245,197,24,0.3); }
+  .badge-sf { background: rgba(193,18,31,0.15); color: #ff6b7a; border: 1px solid rgba(193,18,31,0.4); }
+  .badge-final { background: rgba(245,197,24,0.2); color: var(--gold); border: 1px solid var(--gold); }
+
+  /* ── SPONSOR PACKAGES ── */
+  #sponsors { background: var(--navy-dark); }
+  .packages-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .package-card {
+    background: var(--navy);
+    padding: 48px 36px;
+    position: relative; overflow: hidden;
+    cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none; color: inherit;
+    display: block;
+  }
+  .package-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .card-title { background: var(--gold); }
+  .card-powered { background: var(--orange); }
+  .card-ball { background: rgba(138,155,192,0.5); }
+  .package-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    z-index: 2;
+  }
+  .pkg-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .pkg-label.gold { color: var(--gold); }
+  .pkg-label.orange { color: var(--orange); }
+  .pkg-label.gray { color: var(--text-muted); }
+  .pkg-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem; letter-spacing: 3px; line-height: 1;
+    margin-bottom: 8px;
+  }
+  .pkg-price {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem; color: var(--text-muted);
+    margin-bottom: 36px;
+  }
+  .pkg-price strong { color: var(--white); font-size: 1.3rem; }
+  .pkg-features { list-style: none; }
+  .pkg-features li {
+    font-size: 0.88rem; line-height: 1.6;
+    color: rgba(255,255,255,0.65);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .pkg-features li:last-child { border-bottom: none; }
+  .pkg-features li::before {
+    content: '→'; color: var(--gold); flex-shrink: 0; margin-top: 1px;
+  }
+  .card-powered .pkg-features li::before { color: var(--orange); }
+  .card-ball .pkg-features li::before { color: var(--text-muted); }
+  .pkg-cta {
+    margin-top: 36px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    transition: gap 0.2s;
+  }
+  .package-card:hover .pkg-cta { gap: 14px; }
+  .card-powered .pkg-cta { color: var(--orange); }
+  .card-ball .pkg-cta { color: var(--text-muted); }
+  .closed-badge {
+    display: inline-block;
+    background: rgba(193,18,31,0.2); border: 1px solid rgba(193,18,31,0.5);
+    color: #ff6b7a; font-size: 0.65rem; font-weight: 700; letter-spacing: 2px;
+    padding: 3px 8px; border-radius: 2px; margin-left: 10px;
+    vertical-align: middle; text-transform: uppercase;
+  }
+
+  /* ── DELIVERABLES SECTION (hidden by default) ── */
+  .deliverables-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(10,15,30,0.97);
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+  }
+  .deliverables-overlay.active { display: block; }
+  .del-inner {
+    max-width: 900px; margin: 0 auto;
+    padding: 80px 40px 80px;
+  }
+  .del-close {
+    position: fixed; top: 28px; right: 36px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-muted);
+    background: none; border: 1px solid rgba(255,255,255,0.15);
+    padding: 10px 20px; cursor: pointer; transition: color 0.2s, border-color 0.2s;
+    z-index: 201;
+  }
+  .del-close:hover { color: var(--white); border-color: var(--white); }
+  .del-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .del-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem); letter-spacing: 4px; line-height: 1;
+    margin-bottom: 16px;
+  }
+  .del-price {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem; color: var(--text-muted);
+    margin-bottom: 56px; padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .del-price strong { color: var(--white); font-size: 1.8rem; }
+  .del-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .del-item {
+    background: rgba(255,255,255,0.03);
+    padding: 32px 28px;
+    border-left: 2px solid rgba(245,197,24,0.3);
+  }
+  .del-item h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 10px;
+  }
+  .del-item p { font-size: 0.9rem; line-height: 1.7; color: rgba(255,255,255,0.65); }
+  .del-powered .del-item { border-left-color: rgba(232,93,4,0.5); }
+  .del-powered .del-item h4 { color: var(--orange); }
+  .del-ball .del-item { border-left-color: rgba(138,155,192,0.3); }
+  .del-ball .del-item h4 { color: var(--text-muted); }
+  .del-highlight {
+    margin: 40px 0;
+    background: linear-gradient(135deg, rgba(245,197,24,0.08), rgba(232,93,4,0.05));
+    border: 1px solid rgba(245,197,24,0.2);
+    padding: 32px 36px;
+  }
+  .del-highlight p { font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,0.8); }
+  .del-highlight strong { color: var(--gold); }
+
+  /* ── VENUE ── */
+  #venue { background: var(--navy); }
+  .venue-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+    max-width: 1000px; margin: 0 auto; align-items: start;
+  }
+  .venue-info h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 3px; color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .venue-info p { font-size: 0.95rem; line-height: 1.8; color: rgba(255,255,255,0.65); margin-bottom: 12px; }
+  .venue-detail {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .venue-detail .icon { font-size: 1.2rem; }
+  .venue-detail span {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem; letter-spacing: 1px;
+  }
+  .venue-detail span strong { color: var(--gold); display: block; font-size: 1.05rem; }
+  .cal-block {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 32px;
+  }
+  .cal-block h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 24px;
+  }
+  .cal-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+  }
+  .cal-row:last-child { border-bottom: none; }
+  .cal-row .date { color: var(--text-muted); }
+  .cal-row .event { color: var(--white); }
+  .cal-row .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+  .cal-row .dot.orange { background: var(--orange); }
+  .cal-row .dot.red { background: var(--red); }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--navy-dark);
+    text-align: center;
+    padding: 100px 40px;
+  }
+  .contact-inner { max-width: 600px; margin: 0 auto; }
+  .contact-inner p {
+    font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,0.55);
+    margin-bottom: 48px;
+  }
+  .contact-card {
+    background: var(--navy);
+    border: 1px solid rgba(245,197,24,0.15);
+    padding: 48px 40px;
+    margin-bottom: 24px;
+  }
+  .contact-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 4px; color: var(--gold); margin-bottom: 24px;
+  }
+  .contact-item {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem; letter-spacing: 1px;
+    color: rgba(255,255,255,0.7); margin-bottom: 10px;
+  }
+  .contact-item a { color: inherit; text-decoration: none; }
+  .contact-item a:hover { color: var(--gold); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0a0f1e;
+    text-align: center; padding: 24px 40px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; letter-spacing: 2px; color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    nav ul { gap: 20px; }
+    section { padding: 70px 24px; }
+    .about-grid, .venue-grid { grid-template-columns: 1fr; }
+    .packages-grid { grid-template-columns: 1fr; gap: 4px; }
+    .del-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 32px; }
+    .stage-label { width: 120px; font-size: 0.65rem; }
+  }
+  @media (max-width: 600px) {
+    nav ul { display: none; }
+    .hero-title { font-size: 5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">D<span>P</span>L</div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#format">Format</a></li>
+    <li><a href="#timeline">Schedule</a></li>
+    <li><a href="#sponsors">Sponsors</a></li>
+    <li><a href="#venue">Venue</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="hero-tag">Dinamalar Presents</div>
+  <h1 class="hero-title">
+    <span class="outline">D</span><span class="accent">P</span><span class="outline">L</span>
+  </h1>
+  <p class="hero-sub">Dinamalar Premier League · Cricket 2026</p>
+  <p class="hero-desc">
+    A thrilling platform for corporate teams to showcase their cricketing prowess.
+    32 teams. 47 matches. One champion. Chennai, April–May 2026.
+  </p>
+  <div class="hero-cta">
+    <a href="#sponsors" class="btn-primary">View Sponsorships</a>
+    <a href="#format" class="btn-outline">Tournament Format</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">32</div>
+      <div class="stat-label">Corporate Teams</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">47</div>
+      <div class="stat-label">Total Matches</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">400+</div>
+      <div class="stat-label">Professionals</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Match Days</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text">
+      <div class="section-eyebrow">About The League</div>
+      <h2 class="section-title" style="text-align:left;margin-bottom:32px;">The Premier Corporate Cricket Experience</h2>
+      <p>The <strong>Dinamalar Premier Cricket League</strong> brings together 32 corporate teams for an electrifying leather ball tournament. From the inaugural knockout round through the Grand Final, every match is a battle for corporate glory.</p>
+      <p>Backed by <strong>Dinamalar</strong> — Tamil Nadu's most-read newspaper — the DPL offers sponsors unparalleled access to Chennai's corporate decision-makers through print, digital, and on-ground activations.</p>
+      <p>The Title Sponsor slot has been secured by <strong>Namma Family Group</strong>. The Powered By and Ball/Umpire sponsorship opportunities remain open for the right partners.</p>
+    </div>
+    <div class="about-visual">
+      <div class="cricket-icon">🏏</div>
+      <h3>Leather Ball Cricket</h3>
+      <p>Classic format. Competitive intensity. Corporate camaraderie. KCG College & Agni College, Chennai.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FORMAT -->
+<section id="format">
+  <div class="section-header">
+    <div class="section-eyebrow">Tournament Structure</div>
+    <h2 class="section-title">How The League Works</h2>
+  </div>
+  <div class="bracket">
+    <div class="bracket-stage">
+      <div class="stage-label">Pre-Qualify</div>
+      <div class="stage-content">
+        <span class="team-chip">32 Teams</span>
+        <span class="team-chip">Knockout Format</span>
+        <span class="team-chip">16 Matches</span>
+      </div>
+      <div class="stage-meta"><strong>16</strong>Winners Advance</div>
+    </div>
+    <div class="bracket-stage">
+      <div class="stage-label active">League Stage</div>
+      <div class="stage-content">
+        <span class="team-chip">Group A</span>
+        <span class="team-chip">Group B</span>
+        <span class="team-chip">Group C</span>
+        <span class="team-chip">Group D</span>
+        <span class="team-chip">24 Matches</span>
+      </div>
+      <div class="stage-meta"><strong>8</strong>Teams Qualify</div>
+    </div>
+    <div class="bracket-stage">
+      <div class="stage-label">Quarter Final</div>
+      <div class="stage-content">
+        <span class="team-chip">8 Teams</span>
+        <span class="team-chip">4 Matches</span>
+        <span class="team-chip">2 Grounds</span>
+      </div>
+      <div class="stage-meta"><strong>4</strong>Advance</div>
+    </div>
+    <div class="bracket-stage">
+      <div class="stage-label">Semi Final</div>
+      <div class="stage-content">
+        <span class="team-chip">4 Teams</span>
+        <span class="team-chip">2 Matches</span>
+      </div>
+      <div class="stage-meta"><strong>2</strong>Finalists</div>
+    </div>
+    <div class="bracket-stage">
+      <div class="stage-label active" style="color:var(--gold)">🏆 Grand Final</div>
+      <div class="stage-content">
+        <span class="team-chip">2 Teams</span>
+        <span class="team-chip">1 Match</span>
+        <span class="team-chip">Winner + Runner-up Trophies</span>
+      </div>
+      <div class="stage-meta" style="color:var(--gold)"><strong>1</strong>Champion</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="section-header">
+    <div class="section-eyebrow">Match Schedule</div>
+    <h2 class="section-title">Key Dates</h2>
+  </div>
+  <table class="timeline-table">
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th>Date(s)</th>
+        <th>Matches</th>
+        <th>Grounds</th>
+        <th>Teams</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="stage-badge badge-pre">Inauguration</span></td>
+        <td>Saturday, 4 Apr 2026</td>
+        <td>—</td>
+        <td>—</td>
+        <td>All 32</td>
+      </tr>
+      <tr>
+        <td><span class="stage-badge badge-pre">Pre-Qualify</span></td>
+        <td>Sat–Sun 11–12 Apr 2026</td>
+        <td>16</td>
+        <td>3</td>
+        <td>32</td>
+      </tr>
+      <tr>
+        <td><span class="stage-badge badge-league">League Stage</span></td>
+        <td>18–19 Apr, 25 Apr 2026</td>
+        <td>24</td>
+        <td>3 / 2</td>
+        <td>16</td>
+      </tr>
+      <tr>
+        <td><span class="stage-badge badge-qf">Quarter Final</span></td>
+        <td>Sunday, 26 Apr 2026</td>
+        <td>4</td>
+        <td>2</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><span class="stage-badge badge-sf">Semi Final</span></td>
+        <td>Saturday, 9 May 2026</td>
+        <td>2</td>
+        <td>1</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td><span class="stage-badge badge-final">🏆 Grand Final</span></td>
+        <td>Sunday, 10 May 2026</td>
+        <td>1</td>
+        <td>1</td>
+        <td>2</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SPONSOR PACKAGES -->
+<section id="sponsors">
+  <div class="section-header">
+    <div class="section-eyebrow">Partnership Opportunities</div>
+    <h2 class="section-title">Sponsorship Packages</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-top:12px;">Click a package to view full deliverables</p>
+  </div>
+  <div class="packages-grid">
+
+    <!-- TITLE -->
+    <a class="package-card card-title" onclick="openDel('title')" href="#" style="text-decoration:none;color:inherit;">
+      <div class="pkg-label gold">Most Premium</div>
+      <div class="pkg-name">Title Sponsor <span class="closed-badge">Closed</span></div>
+      <div class="pkg-price">Secured by <strong>Namma Family Group</strong></div>
+      <ul class="pkg-features">
+        <li>Grand inauguration at sponsor's project site</li>
+        <li>400+ corporate professionals footfall</li>
+        <li>Logo on jerseys, banners & all materials</li>
+        <li>10 post-event advertorials in Dinamalar</li>
+        <li>Name & logo on Winner Trophy</li>
+        <li>Prize money cheque & certificates branding</li>
+        <li>Event published as "DPL presented by Sponsor"</li>
+      </ul>
+      <div class="pkg-cta">View Deliverables →</div>
+    </a>
+
+    <!-- POWERED BY -->
+    <a class="package-card card-powered" onclick="openDel('powered')" href="#" style="text-decoration:none;color:inherit;">
+      <div class="pkg-label orange">Available</div>
+      <div class="pkg-name">Powered By Sponsor</div>
+      <div class="pkg-price">Investment: <strong>₹3,00,000 + 18% GST</strong></div>
+      <ul class="pkg-features">
+        <li>Logo on jerseys, banners & promotional materials</li>
+        <li>Logo on Winner & Runner-up Trophies</li>
+        <li>Prime space on Man of the Match Trophy</li>
+        <li>8 pre-event + 8 post-event advertorials</li>
+        <li>30% value back as Dinamalar supplement ads</li>
+        <li>Complimentary slot in Apartment Carnival Edition 4</li>
+        <li>Representative address opportunity at event</li>
+      </ul>
+      <div class="pkg-cta">View Deliverables →</div>
+    </a>
+
+    <!-- BALL -->
+    <a class="package-card card-ball" onclick="openDel('ball')" href="#" style="text-decoration:none;color:inherit;">
+      <div class="pkg-label gray">Available</div>
+      <div class="pkg-name">Ball / Umpire Sponsor</div>
+      <div class="pkg-price">Investment: <strong>₹75,000 + GST</strong></div>
+      <ul class="pkg-features">
+        <li>Logo on jerseys, banners & select materials</li>
+        <li>Logo presence on trophies</li>
+        <li>Acknowledgment in all event communication</li>
+        <li>Social media posts with sponsor logo</li>
+        <li>Ad in Dinamalar Chennai supplement</li>
+        <li>Representative address opportunity</li>
+      </ul>
+      <div class="pkg-cta">View Deliverables →</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- VENUE -->
+<section id="venue">
+  <div class="section-header">
+    <div class="section-eyebrow">Location & Dates</div>
+    <h2 class="section-title">Venue & Schedule</h2>
+  </div>
+  <div class="venue-grid">
+    <div class="venue-info">
+      <h3>Chennai, Tamil Nadu</h3>
+      <div class="venue-detail">
+        <span class="icon">🏟️</span>
+        <span><strong>KCG College of Technology</strong>Cricket Ground, Chennai</span>
+      </div>
+      <div class="venue-detail">
+        <span class="icon">🏟️</span>
+        <span><strong>Agni College of Technology</strong>Cricket Ground, Chennai</span>
+      </div>
+      <div class="venue-detail">
+        <span class="icon">📅</span>
+        <span><strong>April 4 – May 10, 2026</strong>Tournament Window</span>
+      </div>
+      <div class="venue-detail">
+        <span class="icon">👥</span>
+        <span><strong>400+ Corporate Professionals</strong>Expected Footfall</span>
+      </div>
+    </div>
+    <div class="cal-block">
+      <h4>Event Calendar Highlights</h4>
+      <div class="cal-row">
+        <div class="dot gold"></div>
+        <span class="date">Sat, 4 Apr</span>
+        <span class="event">Grand Inauguration</span>
+      </div>
+      <div class="cal-row">
+        <div class="dot"></div>
+        <span class="date">11–12 Apr</span>
+        <span class="event">Pre-Qualify Round</span>
+      </div>
+      <div class="cal-row">
+        <div class="dot orange"></div>
+        <span class="date">18–19 Apr</span>
+        <span class="event">League Stage (Week 2)</span>
+      </div>
+      <div class="cal-row">
+        <div class="dot orange"></div>
+        <span class="date">25–26 Apr</span>
+        <span class="event">League + Quarter Finals</span>
+      </div>
+      <div class="cal-row">
+        <div class="dot red"></div>
+        <span class="date">Sat, 9 May</span>
+        <span class="event">Semi Finals</span>
+      </div>
+      <div class="cal-row">
+        <div class="dot gold"></div>
+        <span class="date">Sun, 10 May</span>
+        <span class="event">🏆 Grand Final</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-eyebrow" style="text-align:center;margin-bottom:12px;">Get In Touch</div>
+    <h2 class="section-title" style="margin-bottom:20px;">Partner With DPL</h2>
+    <p>For sponsorship enquiries and partnership discussions, reach out to our team directly.</p>
+    <div class="contact-card">
+      <div class="contact-name">Surendhiran S</div>
+      <div class="contact-item">📞 <a href="tel:6379844832">6379844832</a></div>
+      <div class="contact-item">✉️ <a href="mailto:surendhiranmahesh@gmail.com">surendhiranmahesh@gmail.com</a></div>
+      <div class="contact-item">📍 No 39, Whites Road, Royapettah, Chennai – 600 014</div>
+    </div>
+    <a href="#sponsors" class="btn-primary" style="display:inline-block;margin-top:8px;">View Packages</a>
+  </div>
+</section>
+
+<footer>© 2026 Dinamalar Premier League · Presented by Dinamalar · All Rights Reserved</footer>
+
+<!-- ── DELIVERABLES OVERLAYS ── -->
+
+<!-- TITLE -->
+<div class="deliverables-overlay" id="del-title">
+  <button class="del-close" onclick="closeDel()">✕ Close</button>
+  <div class="del-inner">
+    <div class="del-eyebrow" style="color:var(--gold)">Sponsorship Deliverables</div>
+    <h2 class="del-title">Title Sponsor</h2>
+    <div class="del-price">Secured by <strong>Namma Family Group</strong> <span class="closed-badge">Closed</span></div>
+    <div class="del-highlight">
+      <p>The Title Sponsorship is the <strong>highest-visibility partnership</strong> in DPL 2026. The event is branded and published as <strong>"Dinamalar Corporate League presented by [Sponsor Name]"</strong> across all print and digital channels.</p>
+    </div>
+    <div class="del-grid">
+      <div class="del-item">
+        <h4>Grand Inauguration</h4>
+        <p>The inauguration is held at your project location. All 32 corporate teams attend, generating 400+ corporate professionals at your venue.</p>
+      </div>
+      <div class="del-item">
+        <h4>On-Ground Branding</h4>
+        <p>Logo prominently featured on player jerseys, all match banners, and every piece of promotional material throughout the tournament.</p>
+      </div>
+      <div class="del-item">
+        <h4>10 Post-Event Advertorials</h4>
+        <p>Article-style coverage in Dinamalar highlighting event updates, brand association, and sponsor visibility across 10 post-event pieces.</p>
+      </div>
+      <div class="del-item">
+        <h4>Pre-Event Advertising</h4>
+        <p>Published as "Dinamalar Corporate League presented by [Sponsor Name]" in pre-event advertisements across Dinamalar's Chennai supplement.</p>
+      </div>
+      <div class="del-item">
+        <h4>Winner Trophy Branding</h4>
+        <p>Prime space for your logo on the Winner Trophy — the centerpiece of the Grand Final ceremony, photographed and published widely.</p>
+      </div>
+      <div class="del-item">
+        <h4>Certificates & Cheque Branding</h4>
+        <p>Sponsor name and logo appear on all prize money cheque leaves and winner/runner-up certificates distributed to teams.</p>
+      </div>
+      <div class="del-item">
+        <h4>All Event Communication</h4>
+        <p>Prominent placement of company name and logo on every piece of event communication — digital, print, and on-ground.</p>
+      </div>
+      <div class="del-item">
+        <h4>Decision-Maker Access</h4>
+        <p>Direct exposure of your brand and project to working professionals and corporate decision-makers across Chennai's top companies.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POWERED BY -->
+<div class="deliverables-overlay del-powered" id="del-powered">
+  <button class="del-close" onclick="closeDel()">✕ Close</button>
+  <div class="del-inner">
+    <div class="del-eyebrow" style="color:var(--orange)">Sponsorship Deliverables</div>
+    <h2 class="del-title">Powered By Sponsor</h2>
+    <div class="del-price">Investment: <strong>₹3,00,000 + 18% GST</strong></div>
+    <div class="del-highlight" style="border-color:rgba(232,93,4,0.3);background:rgba(232,93,4,0.06);">
+      <p>The Powered By sponsorship includes a <strong>30% value return</strong> as advertisement space in the Dinamalar Chennai Supplement Newspaper, making this a high-ROI partnership with both event presence and print media reach.</p>
+    </div>
+    <div class="del-grid">
+      <div class="del-item">
+        <h4>Newspaper Advertising Return</h4>
+        <p>30% of the sponsorship amount is provided back as advertisement value in the Dinamalar Supplement Newspaper.</p>
+      </div>
+      <div class="del-item">
+        <h4>8 Pre-Event Advertorials</h4>
+        <p>Published as "Dinamalar Corporate League powered by [Sponsor Name]" — 8 editions of pre-event coverage in Dinamalar.</p>
+      </div>
+      <div class="del-item">
+        <h4>8 Post-Event Advertorials</h4>
+        <p>Article-style coverage highlighting event updates, brand association, and sponsor visibility across 8 post-event features.</p>
+      </div>
+      <div class="del-item">
+        <h4>Jersey & Banner Branding</h4>
+        <p>Logo presence on player jerseys, all match banners, and select promotional materials throughout the tournament.</p>
+      </div>
+      <div class="del-item">
+        <h4>Trophy Presence</h4>
+        <p>Logo featured on both the Winner Trophy and the Runner-up Trophy at the Grand Final ceremony.</p>
+      </div>
+      <div class="del-item">
+        <h4>Man of the Match Trophy</h4>
+        <p>Prime space for your logo on the Man of the Match Trophy — awarded every match day throughout the tournament.</p>
+      </div>
+      <div class="del-item">
+        <h4>Apartment Carnival Slot</h4>
+        <p>Complimentary main sponsor slot in our Apartment Carnival 4th Edition — an exclusive positioning for 1 premium apartment.</p>
+      </div>
+      <div class="del-item">
+        <h4>Stage Address Opportunity</h4>
+        <p>Opportunity for your representative to address all attendees at the event — direct engagement with 400+ corporate professionals.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BALL -->
+<div class="deliverables-overlay del-ball" id="del-ball">
+  <button class="del-close" onclick="closeDel()">✕ Close</button>
+  <div class="del-inner">
+    <div class="del-eyebrow" style="color:var(--text-muted)">Sponsorship Deliverables</div>
+    <h2 class="del-title">Ball / Umpire Sponsor</h2>
+    <div class="del-price">Investment: <strong>₹75,000 + GST</strong></div>
+    <div class="del-highlight" style="border-color:rgba(138,155,192,0.2);background:rgba(138,155,192,0.04);">
+      <p>The Ball/Umpire sponsorship provides <strong>brand visibility across all match days</strong>, associating your brand directly with the on-field action — the most-photographed moments of every cricket tournament.</p>
+    </div>
+    <div class="del-grid">
+      <div class="del-item">
+        <h4>Jersey & Banner Branding</h4>
+        <p>Logo presence on player jerseys, all match banners, and select promotional materials throughout the tournament.</p>
+      </div>
+      <div class="del-item">
+        <h4>Trophy Logo Presence</h4>
+        <p>Your logo featured on event trophies, ensuring brand visibility during the prize ceremony and in all post-event photographs.</p>
+      </div>
+      <div class="del-item">
+        <h4>Newspaper Advertisement</h4>
+        <p>Your logo featured in an advertisement in the Dinamalar Chennai Supplement Newspaper — reaching Tamil Nadu's widest readership.</p>
+      </div>
+      <div class="del-item">
+        <h4>Social Media Mentions</h4>
+        <p>Social media posts across DPL's official channels mentioning and featuring the sponsor logo throughout the tournament.</p>
+      </div>
+      <div class="del-item">
+        <h4>Event Communication</h4>
+        <p>Acknowledgment in all official communication related to the event — digital, print, and on-ground materials.</p>
+      </div>
+      <div class="del-item">
+        <h4>Stage Address Opportunity</h4>
+        <p>Opportunity for a representative to address event attendees — direct engagement with Chennai's corporate community.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openDel(type) {
+    event.preventDefault();
+    document.querySelectorAll('.deliverables-overlay').forEach(el => el.classList.remove('active'));
+    document.getElementById('del-' + type).classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDel() {
+    document.querySelectorAll('.deliverables-overlay').forEach(el => el.classList.remove('active'));
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDel(); });
+</script>
+</body>
+</html>
